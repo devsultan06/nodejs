@@ -1,37 +1,19 @@
-import generateName from "sillyname";
-import superheroes, { randomSuperhero } from "superheroes";
-import fs from "fs";
-import { input } from "@inquirer/prompts";
+import express from "express";
 
-import qr from "qr-image";
+const app = express();
 
-var sillyName = generateName();
-
-const answer = await input({
-  message: "Enter your website url",
-  required: true,
+app.get("/", (req, res) => {
+  res.send("Hello World");
 });
 
-var qr_svg = qr.image(answer);
-qr_svg.pipe(fs.createWriteStream("qr.png"));
-
-console.log("Your name is:", answer);
-
-console.log("Silly Name:", sillyName);
-console.log("Random Superhero:", randomSuperhero());
-
-fs.writeFile("output.txt", sillyName, (err) => {
-  if (err) {
-    console.error("Error writing to file:", err);
-  } else {
-    console.log("File written successfully!");
-  }
+app.get("/about", (req, res) => {
+  res.send("About Page");
 });
 
-fs.writeFile("output2.txt", answer, (err) => {
-  if (err) {
-    console.error("Error writing to file:", err);
-  } else {
-    console.log("File written successfully!");
-  }
+app.get("/contact", (req, res) => {
+  res.send("Contact Page");
+});
+
+app.listen(3000, () => {
+  console.log("Server is running on http://localhost:3000");
 });
