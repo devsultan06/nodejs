@@ -2,8 +2,13 @@ import express from "express";
 
 const app = express();
 
+
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.send({
+    message: "Welcome to the Home Page",
+    timestamp: new Date().toISOString(),
+  });
+  console.log(req.headers);
 });
 
 app.get("/about", (req, res) => {
