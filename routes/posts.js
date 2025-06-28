@@ -17,27 +17,25 @@ router.get("/", (req, res) => {
   res.status(200).json(posts);
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", (req, res, next) => {
   const { id } = req.params;
   const postId = parseInt(id, 10);
   const post = posts.find((p) => p.id === postId);
   if (!post) {
-    return res.status(404).send({
-      error: "Post not found",
-      message: `No post found with id ${id}`,
-    });
+    const error = new Error(`No post found with id ${id}`);
+    error.status = 404;
+    return next(error);
   }
 
   res.status(200).json(post);
 });
 
-router.post("/", (req, res) => {
+router.post("/", (req, res, next) => {
   const { title, content } = req.body;
   if (!title || !content) {
-    return res.status(400).send({
-      error: "Bad Request",
-      message: "Title and content are required",
-    });
+    const error = new Error("Title and content are required");
+    error.status = 400;
+    return next(error);
   }
   const newPost = {
     id: posts.length + 1,
@@ -45,7 +43,43 @@ router.post("/", (req, res) => {
     content,
   };
   posts.push(newPost);
-  res.status(201).json(newPost);
+  res.status(201).json(posts);
+});
+
+router.put("/:id", (req, res, next) => {
+  const { id } = req.params;
+  const postId = parseInt(id, 10);
+  const postIndex = posts.findIndex((p) => p.id === postId);
+  if (postIndex === -1) {
+    const error = new Error(`No post found with id ${id}`);
+    error.status = 404;
+    return next(error);
+  }
+
+  const { title, content } = req.body;
+  if (!title || !content) {
+    return res.status(400).send({
+      error: "Bad Request",
+      message: "Title and content are required",
+    });
+  }
+
+  posts[postIndex] = { id: postId, title, content };
+  res.status(200).json(posts[postIndex]);
+});
+
+router.delete("/:id", (req, res, next) => {
+  const { id } = req.params;
+  const postId = parseInt(id, 10);
+  const postIndex = posts.findIndex((p) => p.id === postId);
+  if (postIndex === -1) {
+    const error = new Error(`No post found with id ${id}`);
+    error.status = 404;
+    return next(error);
+  }
+
+  posts.splice(postIndex, 1);
+  res.status(204).send();
 });
 
 export default router;
