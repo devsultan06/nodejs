@@ -6,6 +6,7 @@ import logger from "./middleware/logger.js";
 
 import dotenv from "dotenv";
 import errorHandler from "./middleware/errorHandler.js";
+import notFound from "./middleware/notFound.js";
 dotenv.config();
 
 const port = process.env.PORT || 3000;
@@ -15,7 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(logger)
+app.use(logger);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,6 +30,8 @@ app.get("/about", (req, res) => {
 });
 
 app.use("/api/posts", posts);
+
+app.use(notFound);
 
 app.use(errorHandler);
 
