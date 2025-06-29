@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import errorHandler from "./middleware/errorHandler.js";
 import notFound from "./middleware/notFound.js";
+import products from "./routes/products.js";
 dotenv.config();
 
 const port = process.env.PORT || 3000;
@@ -31,6 +32,7 @@ app.get("/about", (req, res) => {
 });
 
 app.use("/api/posts", posts);
+app.use("/api/products", products);
 
 app.use(notFound);
 
